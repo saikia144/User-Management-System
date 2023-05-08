@@ -25,6 +25,24 @@
 <script
 	src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
+<script>
+
+function editUser(id) {
+	document.getElementById("editUserId").value = id;
+	console.log(id);
+}
+
+function validateForm() {
+	  var id = document.forms["myForm"]["id"].value;
+	  if (id == "") {
+	    console.log("ID must be filled out");
+	  }else{
+		  console.log("id is: "+id)
+	  }
+	}
+</script>
+
+
 <style>
 h2 {
 	text-align: center;
@@ -46,7 +64,8 @@ table {
 				<div class="collapse navbar-collapse justify-content-between"
 					id="navbarCollapse">
 					<div class="navbar-nav">
-						<a href="index.jsp" class="nav-item nav-link">Users</a>
+						<a href="<%=request.getContextPath()%>/list"
+							class="nav-item nav-link">Users</a>
 					</div>
 				</div>
 			</div>
@@ -72,7 +91,7 @@ table {
 						</button>
 					</div>
 					<div class="modal-body">
-						<form action="addUser" method="post">
+						<form action="insert" method="post">
 							<div class="form-group">
 								<label for="name">Name</label> <input type="text"
 									class="form-control" id="name" name="name" required>
@@ -106,19 +125,62 @@ table {
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach items ="${userList}" var="user" >
+					<c:forEach items="${listUser}" var="user">
 						<tr>
 							<td>${user.id}</td>
 							<td>${user.name}</td>
 							<td>${user.email}</td>
 							<td>${user.country}</td>
-							<td></td>
+							<td><a href="#" data-toggle="modal"
+								data-target="#editUserModal" onclick="editUser(${user.id})">Edit</a>
+								<a href="delete?id=${user.id}">Delete</a></td>
 						</tr>
 					</c:forEach>
 				</tbody>
 			</table>
 		</div>
 
+		<!-- data-toggle="modal" data-target="#editUserModal" -->
+
+		<div class="modal fade" id="editUserModal" tabindex="-1" role="dialog"
+			aria-labelledby="editUserModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form name="myForm" action="<%=request.getContextPath()%>/update"
+							method="post" onsubmit="return validateForm()">
+							<div class="form-group">
+								Edit User with id: <input type="text" class="form-control"
+									name="id" id="editUserId" readonly>
+							</div>
+							<div class="form-group">
+								<label for="name">Name</label> <input type="text"
+									class="form-control" id="name" name="name" required>
+							</div>
+							<div class="form-group">
+								<label for="email">Email</label> <input type="email"
+									class="form-control" id="email" name="email" required>
+							</div>
+							<div class="form-group">
+								<label for="email">Country</label> <input type="text"
+									class="form-control" id="country" name="country" required>
+							</div>
+							<br>
+							<button type="submit" class="btn btn-success">Update</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
 	</main>
+	
+
 </body>
 </html>
